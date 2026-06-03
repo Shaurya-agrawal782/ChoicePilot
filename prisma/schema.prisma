@@ -87,6 +87,7 @@ model Program {
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
   cutoffs        Cutoff[]
+  savedRoutes    SavedRoute[]
 
   @@unique([collegeId, branchCode, examAccepted])
   @@index([branchCode])
@@ -125,4 +126,27 @@ model Cutoff {
   @@index([closingRank])
   @@index([category])
   @@index([year])
+}
+
+model User {
+  id           String       @id @default(cuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  savedRoutes  SavedRoute[]
+}
+
+model SavedRoute {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  programId String
+  program   Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, programId])
+  @@index([userId])
 }
