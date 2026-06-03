@@ -100,7 +100,12 @@
 - Heavy scroll-stack interaction was intentionally avoided to preserve clarity.
 - Verified build and lint checks pass successfully.
 
+## [2026-06-04] Landing Section 3 — Explainable Recommendation Preview (Static Composition Only)
 
-
-
-
+- Checkpointed the approved Decision Story motion locally.
+- Implemented the `RecommendationPreviewSection` static section below the Decision Story section.
+- Added a two-column responsive layout:
+  - Left column: Editorial copy including the `EXPLAINABLE RECOMMENDATIONS` eyebrow, main heading, supporting paragraph, and three concise principles (`Cutoff-aware`, `Budget-conscious`, `Source-backed`).
+  - Right column: A premium static recommendation preview dossier card for `LNCT Bhopal` (CSE) featuring a Match Score of `84 / 100`, scoring breakdown with static progress bars, and a reason footer.
+- Recommendation score bars and content are presentation-only at this stage; functional predictor logic is intentionally deferred.
+- Verified build and lint checks pass successfully.
