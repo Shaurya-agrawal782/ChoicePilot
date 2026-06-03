@@ -50,3 +50,14 @@
 - Adjusted the desktop atlas visual container's maximum width slightly (`lg:max-w-[460px] xl:max-w-[500px]`) for a more confident visual balance on wide viewports.
 - Preserved all mobile visual layouts, responsive stacking behavior, and design token definitions.
 - Verified build and lint checks pass successfully.
+
+## [2026-06-03] Hero Motion Pass 1 — Controlled Entrance Animation
+
+- Converted `LandingHero.tsx` to a client component (`"use client"`) to enable motion.
+- Added controlled entrance animations via the `motion` package (`motion/react`):
+  - **Navbar:** Single restrained unit entrance (opacity 0→1, translateY -10→0, ~0.55s).
+  - **Left hero content:** Staggered entrance for 7 items (eyebrow label, 3 headline lines, description, CTA row, trust line) with ~0.09s stagger gaps and opacity + subtle translateY (16px) reveals.
+  - **Decision Atlas panel:** Whole-panel entrance (opacity 0→1, translateY 16→0, scale 0.985→1, ~0.7s, delayed by 0.5s).
+- Reduced-motion support implemented via `useReducedMotion()`: no translate/scale movement when preferred; simple short opacity reveal only.
+- Internal Atlas routes, nodes, cards, grid lines, and score labels are intentionally not animated (deferred to next reviewed pass).
+- Verified build and lint checks pass successfully.
