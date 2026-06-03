@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import HeroNavbar from "./HeroNavbar";
 import DecisionAtlasVisual from "./DecisionAtlasVisual";
 import { ArrowRight } from "lucide-react";
@@ -95,12 +96,12 @@ export default function LandingHero() {
                 <span>Start My Route</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
-              <a
+              <Link
                 href="/colleges"
                 className="inline-flex items-center justify-center px-6 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider text-warm-white border border-warm-white/20 hover:bg-warm-white/5 rounded-full transition-all duration-200"
               >
                 Explore Colleges
-              </a>
+              </Link>
             </motion.div>
 
             {/* Trust Line */}

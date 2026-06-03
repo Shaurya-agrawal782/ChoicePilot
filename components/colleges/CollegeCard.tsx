@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface Program {
   id: string;
   branchCode: string;
@@ -9,6 +11,7 @@ interface Program {
 interface College {
   id: string;
   name: string;
+  slug: string;
   city: string;
   type: string;
   programs: Program[];
@@ -114,13 +117,12 @@ export default function CollegeCard({ college }: { college: College }) {
         <span className="data-label text-[10px] font-mono text-muted/60">
           {college.programs.length} programme{college.programs.length !== 1 ? "s" : ""} available
         </span>
-        <button
-          disabled
-          className="data-label text-[10px] font-mono font-semibold tracking-wider uppercase px-4 py-1.5 rounded-full border border-border text-muted cursor-not-allowed opacity-60"
-          title="Detail view coming soon"
+        <Link
+          href={`/colleges/${college.slug}`}
+          className="data-label text-[10px] font-mono font-semibold tracking-wider uppercase px-4 py-1.5 rounded-full border border-primary/40 text-primary hover:bg-primary/5 transition-colors"
         >
           View Details
-        </button>
+        </Link>
       </div>
     </div>
   );

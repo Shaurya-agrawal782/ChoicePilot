@@ -16,6 +16,7 @@ interface Program {
 interface College {
   id: string;
   name: string;
+  slug: string;
   city: string;
   type: string;
   programs: Program[];
