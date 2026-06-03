@@ -16,7 +16,7 @@ export default function HeroNavbar() {
 
       {/* Center/Right Navigation Links */}
       <div className="hidden md:flex items-center gap-8">
-        <Link href="#explore" className="text-xs sm:text-sm font-medium text-warm-white/60 hover:text-warm-white transition-colors">
+        <Link href="/colleges" className="text-xs sm:text-sm font-medium text-warm-white/60 hover:text-warm-white transition-colors">
           Explore Colleges
         </Link>
         <Link href="#how-it-works" className="text-xs sm:text-sm font-medium text-warm-white/60 hover:text-warm-white transition-colors">

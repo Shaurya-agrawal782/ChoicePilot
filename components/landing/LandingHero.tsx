@@ -96,7 +96,7 @@ export default function LandingHero() {
                 <ArrowRight className="w-4 h-4" />
               </a>
               <a
-                href="#explore"
+                href="/colleges"
                 className="inline-flex items-center justify-center px-6 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider text-warm-white border border-warm-white/20 hover:bg-warm-white/5 rounded-full transition-all duration-200"
               >
                 Explore Colleges
