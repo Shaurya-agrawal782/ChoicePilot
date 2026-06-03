@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --color-midnight: #070B14;
+  --color-midnight-surface: #101827;
+  --color-warm-white: #F5F3EE;
+  --color-route-indigo: #4D78FF;
+  --color-route-amber: #F4B740;
+  --color-route-emerald: #20B486;
+
+  --color-paper: #F7F4EE;
+  --color-surface: #FFFFFF;
+  --color-ink: #111827;
+  --color-muted: #64748B;
+  --color-border: #E5E0D7;
+  --color-primary: #2F5BFF;
+
+  --color-safe: #168866;
+  --color-target: #D58B18;
+  --color-dream: #6256D9;
+  --color-warning: #C85A32;
+}
+
+@theme {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-ibm-plex-mono);
+  --font-display: var(--font-instrument-serif);
+
+  --color-midnight: var(--color-midnight);
+  --color-midnight-surface: var(--color-midnight-surface);
+  --color-warm-white: var(--color-warm-white);
+  --color-route-indigo: var(--color-route-indigo);
+  --color-route-amber: var(--color-route-amber);
+  --color-route-emerald: var(--color-route-emerald);
+
+  --color-paper: var(--color-paper);
+  --color-surface: var(--color-surface);
+  --color-ink: var(--color-ink);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+  --color-primary: var(--color-primary);
+
+  --color-safe: var(--color-safe);
+  --color-target: var(--color-target);
+  --color-dream: var(--color-dream);
+  --color-warning: var(--color-warning);
+}
+
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-inter), sans-serif;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.display-heading {
+  font-family: var(--font-instrument-serif), serif;
+}
+
+.data-label {
+  font-family: var(--font-ibm-plex-mono), monospace;
+}
