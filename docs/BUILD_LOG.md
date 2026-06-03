@@ -87,6 +87,20 @@
 - Refined hero-to-story vertical handoff to reduce excess dark dead space while preserving the approved dark-to-warm narrative transition.
 - Verified build and lint checks pass successfully.
 
+## [2026-06-03] Decision Story Motion Pass 1 — Viewport Narrative Entrance
+
+- Checkpointed the approved static Decision Story section and spacing vertical handoff locally.
+- Implemented Decision Story Motion Pass 1 adding restrained in-view entrance reveals:
+  - **Section Header:** Eyebrow, heading, and description reveal as a calm unit (opacity 0→1, y 16px→0, 0.6s duration) triggered only once when in view.
+  - **Factor Cards:** Staggered sequence reveal (stagger gap 0.08s, duration 0.5s per card, y 18px→0) in Rank → Branch → Budget → Goal reading order.
+  - **Connector:** Inputs connector label and divider lines reveal with a clean fade-in (opacity 0→1, y 8px→0) delayed by 0.2s.
+  - **Generated Route Card:** Center outcome card reveals last (opacity 0→1, y 16px→0, scale 0.99→1, 0.6s duration) delayed by 0.35s to make the output relationship clear.
+  - **Trigger and Timing:** Viewport-triggered reveals using `whileInView` with `once: true`. Desktop animation completes within 0.95s once triggered. Mobile cards reveal independently as the user scrolls to avoid wait times.
+- Supported reduced-motion: disables translations and scaling, opting for immediate or short opacity reveals.
+- Heavy scroll-stack interaction was intentionally avoided to preserve clarity.
+- Verified build and lint checks pass successfully.
+
+
 
 
 
