@@ -61,3 +61,16 @@
 - Reduced-motion support implemented via `useReducedMotion()`: no translate/scale movement when preferred; simple short opacity reveal only.
 - Internal Atlas routes, nodes, cards, grid lines, and score labels are intentionally not animated (deferred to next reviewed pass).
 - Verified build and lint checks pass successfully.
+
+## [2026-06-03] Decision Atlas Motion Pass 2 — Restrained Route-Calculation Sequence
+
+- Checkpointed the approved Hero Motion Pass 1 entrance animation locally.
+- Implemented Decision Atlas Motion Pass 2 adding restrained internal animations:
+  - **Rank Badge & Profile Node:** Soft fade and subtle scaling reveals starting at 0.7s.
+  - **Route Paths:** Draw outward progressively using SVG `pathLength` drawing. Target route draws first (0.8s - 1.45s), followed shortly by Dream and Safe supporting routes (0.95s - 1.45s).
+  - **Endpoint Nodes:** Dream, Safe, and Selected Route target labels fade in cleanly after their respective routes reach them.
+  - **Recommendation Card:** Settle/fade-in animation (opacity 0→1, y 8→0, scale 0.98→1, 0.5s duration) starting at 1.15s after the target route draws enough.
+  - **Mobile Layout:** Compact top row, recommendation card, and route summary row fade in sequentially (0.7s, 0.85s, 1.0s) without layout shifts.
+- Supported reduced-motion: disables path drawing, scale, and translations, revealing components with short simple opacity fades.
+- Verified build and lint checks pass successfully.
+
