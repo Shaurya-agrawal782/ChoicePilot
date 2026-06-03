@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CollegeType {
+  GOVERNMENT
+  PRIVATE
+  AUTONOMOUS
+}
+
+enum ExamType {
+  JEE_MAIN
+  MP_DTE
+}
+
+enum BranchCode {
+  CSE
+  AIML
+  IT
+  EC
+  ME
+  CE
+}
+
+enum Category {
+  GENERAL
+  OBC
+  SC
+  ST
+  EWS
+}
+
+enum SourceType {
+  OFFICIAL_COUNSELLING
+  OFFICIAL_COLLEGE
+  REGULATORY
+  RANKING
+  DEMO
+}
+
+enum ConfidenceLevel {
+  VERIFIED
+  PARTIALLY_VERIFIED
+  DEMO
+}
+
+model College {
+  id              String      @id @default(cuid())
+  name            String
+  slug            String      @unique
+  city            String
+  state           String      @default("Madhya Pradesh")
+  type            CollegeType
+  affiliation     String?
+  approvalStatus  String?
+  officialWebsite String?
+  overview        String?
+  hostelAvailable Boolean?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  programs        Program[]
+
+  @@index([city])
+  @@index([type])
+}
+
+model Program {
+  id             String     @id @default(cuid())
+  collegeId      String
+  college        College    @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  branchCode     BranchCode
+  branchName     String
+  degree         String     @default("B.Tech")
+  durationYears  Int        @default(4)
+  annualFee      Int?
+  examAccepted   ExamType
+  averagePackage Float?
+  highestPackage Float?
+  placementYear  String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  cutoffs        Cutoff[]
+
+  @@unique([collegeId, branchCode, examAccepted])
+  @@index([branchCode])
+  @@index([annualFee])
+  @@index([examAccepted])
+}
+
+model DataSource {
+  id           String          @id @default(cuid())
+  title        String
+  url          String?
+  sourceType   SourceType
+  academicYear String?
+  verifiedAt   DateTime?
+  confidence   ConfidenceLevel @default(DEMO)
+  notes        String?
+  createdAt    DateTime        @default(now())
+  cutoffs      Cutoff[]
+}
+
+model Cutoff {
+  id                   String      @id @default(cuid())
+  programId            String
+  program              Program     @relation(fields: [programId], references: [id], onDelete: Cascade)
+  sourceId             String?
+  source               DataSource? @relation(fields: [sourceId], references: [id])
+  counsellingAuthority String      @default("DTE MP")
+  year                 Int
+  round                Int
+  category             Category
+  openingRank          Int?
+  closingRank          Int
+  createdAt            DateTime    @default(now())
+
+  @@unique([programId, year, round, category])
+  @@index([closingRank])
+  @@index([category])
+  @@index([year])
+}
