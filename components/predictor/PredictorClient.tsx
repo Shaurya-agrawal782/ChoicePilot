@@ -153,7 +153,15 @@ function ScoreBar({
 
 // ── Recommendation card ───────────────────────────────────────────────────────
 
-function RecommendationCard({ rec }: { rec: Recommendation }) {
+function RecommendationCard({
+  rec,
+  isSelected,
+  onToggle,
+}: {
+  rec: Recommendation;
+  isSelected: boolean;
+  onToggle: () => void;
+}) {
   const band = BAND_CONFIG[rec.chanceBand];
 
   return (
@@ -274,17 +282,18 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
         </div>
       )}
 
-      {/* Compare Route — disabled placeholder */}
+      {/* Add to Compare / Remove toggle */}
       <div className="pt-4">
         <button
-          disabled
-          title="Compare Route — coming soon"
-          className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full border border-border text-muted cursor-not-allowed opacity-50"
+          type="button"
+          onClick={onToggle}
+          className={`inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full border transition-all ${
+            isSelected
+              ? "bg-warning/10 border-warning text-warning hover:bg-warning/20"
+              : "bg-surface border-border text-ink hover:bg-border/10"
+          }`}
         >
-          Compare Route
-          <span className="data-label text-[9px] font-mono font-normal tracking-wider text-muted/60 normal-case">
-            — Coming soon
-          </span>
+          {isSelected ? "Remove" : "Add to Compare"}
         </button>
       </div>
     </div>
@@ -296,9 +305,13 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
 function BandSection({
   band,
   recommendations,
+  selectedRoutes,
+  onToggleSelect,
 }: {
   band: ChanceBand;
   recommendations: Recommendation[];
+  selectedRoutes: Recommendation[];
+  onToggleSelect: (rec: Recommendation) => void;
 }) {
   if (recommendations.length === 0) return null;
   const cfg = BAND_CONFIG[band];
@@ -319,7 +332,12 @@ function BandSection({
       </div>
       <div className="flex flex-col gap-4">
         {recommendations.map((rec) => (
-          <RecommendationCard key={rec.programmeId} rec={rec} />
+          <RecommendationCard
+            key={rec.programmeId}
+            rec={rec}
+            isSelected={selectedRoutes.some((r) => r.programmeId === rec.programmeId)}
+            onToggle={() => onToggleSelect(rec)}
+          />
         ))}
       </div>
     </div>
@@ -358,6 +376,27 @@ export default function PredictorClient({
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PredictorResult | null>(null);
 
+  // Compare state
+  const [selectedRoutes, setSelectedRoutes] = useState<Recommendation[]>([]);
+  const [selectionWarning, setSelectionWarning] = useState<string | null>(null);
+
+  const toggleSelect = (rec: Recommendation) => {
+    setSelectedRoutes((prev) => {
+      const exists = prev.some((r) => r.programmeId === rec.programmeId);
+      if (exists) {
+        setSelectionWarning(null);
+        return prev.filter((r) => r.programmeId !== rec.programmeId);
+      } else {
+        if (prev.length >= 3) {
+          setSelectionWarning("Maximum 3 routes can be compared at once.");
+          return prev;
+        }
+        setSelectionWarning(null);
+        return [...prev, rec];
+      }
+    });
+  };
+
   // Shared Tailwind classes
   const inputCls =
     "w-full bg-surface border border-border rounded-xl px-4 py-2.5 text-sm text-ink placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-colors";
@@ -368,6 +407,8 @@ export default function PredictorClient({
     e.preventDefault();
     setError(null);
     setResult(null);
+    setSelectedRoutes([]);
+    setSelectionWarning(null);
 
     const rankNum = parseInt(rank, 10);
     if (!rank || isNaN(rankNum) || rankNum <= 0) {
@@ -610,7 +651,7 @@ export default function PredictorClient({
 
       {/* ── Results ── */}
       {result && !loading && (
-        <div>
+        <div className="pb-24">
           {/* Notice banner */}
           <div className="flex items-start gap-2.5 bg-border/30 border border-border rounded-lg px-4 py-3 mb-6">
             <span className="text-muted shrink-0 mt-px">⚠</span>
@@ -664,17 +705,31 @@ export default function PredictorClient({
           {/* Band sections — Safe first, then Target, then Dream */}
           {result.counts.total > 0 && (
             <>
+              {selectionWarning && (
+                <div className="bg-warning/5 border border-warning/20 rounded-xl px-5 py-3 mb-6">
+                  <p className="data-label text-xs font-mono text-warning">
+                    {selectionWarning}
+                  </p>
+                </div>
+              )}
+
               <BandSection
                 band="SAFE"
                 recommendations={result.recommendations.safe}
+                selectedRoutes={selectedRoutes}
+                onToggleSelect={toggleSelect}
               />
               <BandSection
                 band="TARGET"
                 recommendations={result.recommendations.target}
+                selectedRoutes={selectedRoutes}
+                onToggleSelect={toggleSelect}
               />
               <BandSection
                 band="DREAM"
                 recommendations={result.recommendations.dream}
+                selectedRoutes={selectedRoutes}
+                onToggleSelect={toggleSelect}
               />
             </>
           )}
@@ -689,6 +744,56 @@ export default function PredictorClient({
               </p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── Compare bottom tray ── */}
+      {selectedRoutes.length >= 2 && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border shadow-[0_-4px_16px_rgba(0,0,0,0.05)] px-4 py-4 sm:px-6">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+              <span className="text-sm font-semibold text-ink">
+                {selectedRoutes.length} routes selected
+              </span>
+              <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-1">
+                {selectedRoutes.map((r) => (
+                  <span
+                    key={r.programmeId}
+                    className="data-label text-[10px] px-2.5 py-0.5 bg-paper rounded-full border border-border text-muted"
+                  >
+                    {r.college.name.length > 20
+                      ? r.college.name.substring(0, 17) + "..."
+                      : r.college.name}{" "}
+                    ({r.branchCode})
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedRoutes([]);
+                  setSelectionWarning(null);
+                }}
+                className="text-xs font-semibold uppercase tracking-wider text-muted hover:text-ink transition-colors"
+              >
+                Clear
+              </button>
+              <Link
+                href={`/compare?programs=${encodeURIComponent(
+                  selectedRoutes.map((r) => r.programmeId).join(",")
+                )}&rank=${encodeURIComponent(rank)}&branches=${encodeURIComponent(
+                  [pref1, pref2, pref3].filter(Boolean).join(",")
+                )}&city=${encodeURIComponent(city)}&priority=${encodeURIComponent(
+                  priority
+                )}${maxFee ? `&maxFee=${encodeURIComponent(maxFee)}` : ""}`}
+                className="inline-flex items-center justify-center px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-surface bg-primary hover:bg-primary/95 rounded-full transition-colors"
+              >
+                Compare Selected Routes
+              </Link>
+            </div>
+          </div>
         </div>
       )}
     </div>
