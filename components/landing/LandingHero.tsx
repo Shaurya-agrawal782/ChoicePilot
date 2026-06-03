@@ -89,13 +89,13 @@ export default function LandingHero() {
               variants={itemVariants}
               className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto"
             >
-              <a
-                href="#start"
+              <Link
+                href="/predictor"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider text-midnight bg-warm-white hover:bg-warm-white/95 rounded-full transition-all duration-200 shadow-lg"
               >
                 <span>Start My Route</span>
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </Link>
               <Link
                 href="/colleges"
                 className="inline-flex items-center justify-center px-6 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider text-warm-white border border-warm-white/20 hover:bg-warm-white/5 rounded-full transition-all duration-200"

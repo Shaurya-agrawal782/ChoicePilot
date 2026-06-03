@@ -227,7 +227,13 @@ function CutoffTable({ cutoffs }: { cutoffs: Cutoff[] }) {
 
 // ── Programme card ────────────────────────────────────────────────────────────
 
-function ProgramCard({ program }: { program: Program }) {
+function ProgramCard({
+  program,
+  collegeCity,
+}: {
+  program: Program;
+  collegeCity: string;
+}) {
   return (
     <div className="bg-surface border border-border rounded-2xl p-5 sm:p-6 shadow-sm">
       {/* Programme header */}
@@ -302,18 +308,14 @@ function ProgramCard({ program }: { program: Program }) {
         <CutoffTable cutoffs={program.cutoffs} />
       </div>
 
-      {/* Check My Fit — disabled placeholder */}
+      {/* Check My Fit — links to predictor pre-filled with branch + city */}
       <div className="mt-5 pt-4 border-t border-border/40">
-        <button
-          disabled
-          title="Smart Match Predictor coming soon"
-          className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full border border-border text-muted cursor-not-allowed opacity-50"
+        <Link
+          href={`/predictor?branch=${program.branchCode}&city=${encodeURIComponent(collegeCity)}`}
+          className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full border border-primary/30 text-primary hover:bg-primary/5 transition-colors"
         >
-          Check My Fit
-          <span className="data-label text-[9px] font-mono font-normal tracking-wider text-muted/60 normal-case">
-            — Coming soon
-          </span>
-        </button>
+          Check My Fit →
+        </Link>
       </div>
     </div>
   );
@@ -428,7 +430,11 @@ export default async function CollegeDetailPage({
           ) : (
             <div className="flex flex-col gap-6">
               {college.programs.map((program) => (
-                <ProgramCard key={program.id} program={program} />
+                <ProgramCard
+                  key={program.id}
+                  program={program}
+                  collegeCity={college.city}
+                />
               ))}
             </div>
           )}
