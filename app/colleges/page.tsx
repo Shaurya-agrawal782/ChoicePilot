@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import CollegeExplorerClient from "@/components/colleges/CollegeExplorerClient";
 
 export const metadata: Metadata = {
@@ -12,9 +13,17 @@ export default function CollegesPage() {
     <main className="min-h-screen bg-paper text-ink">
       {/* Page Header */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-16 pb-10 md:pt-20 md:pb-12">
-        <span className="data-label text-[10px] sm:text-xs font-semibold tracking-widest text-muted font-mono uppercase">
-          COLLEGE EXPLORER
-        </span>
+        <div className="flex items-center justify-between gap-4">
+          <span className="data-label text-[10px] sm:text-xs font-semibold tracking-widest text-muted font-mono uppercase">
+            COLLEGE EXPLORER
+          </span>
+          <Link
+            href="/dashboard"
+            className="data-label text-[10px] font-mono font-semibold tracking-widest text-muted hover:text-ink uppercase transition-colors"
+          >
+            Dashboard
+          </Link>
+        </div>
         <h1 className="display-heading text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight text-ink mt-3">
           Explore engineering routes.
         </h1>

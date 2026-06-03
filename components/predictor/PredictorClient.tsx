@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -157,12 +159,19 @@ function RecommendationCard({
   rec,
   isSelected,
   onToggle,
+  isSaved,
+  isSaving,
+  onToggleSave,
 }: {
   rec: Recommendation;
   isSelected: boolean;
   onToggle: () => void;
+  isSaved: boolean;
+  isSaving: boolean;
+  onToggleSave: () => void;
 }) {
   const band = BAND_CONFIG[rec.chanceBand];
+  const [saveHovered, setSaveHovered] = useState(false);
 
   return (
     <div className="bg-surface border border-border rounded-2xl p-5 sm:p-6 shadow-sm">
@@ -282,8 +291,8 @@ function RecommendationCard({
         </div>
       )}
 
-      {/* Add to Compare / Remove toggle */}
-      <div className="pt-4">
+      {/* Action buttons */}
+      <div className="pt-4 flex items-center gap-3">
         <button
           type="button"
           onClick={onToggle}
@@ -294,6 +303,21 @@ function RecommendationCard({
           }`}
         >
           {isSelected ? "Remove" : "Add to Compare"}
+        </button>
+
+        <button
+          type="button"
+          onClick={onToggleSave}
+          onMouseEnter={() => setSaveHovered(true)}
+          onMouseLeave={() => setSaveHovered(false)}
+          disabled={isSaving}
+          className={`inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full border transition-all ${
+            isSaved
+              ? "bg-primary/10 border-primary/40 text-primary hover:bg-primary/20"
+              : "bg-surface border-border text-muted hover:text-ink hover:bg-border/10"
+          }`}
+        >
+          {isSaved ? (saveHovered ? "Remove" : "Saved") : "Save Route"}
         </button>
       </div>
     </div>
@@ -307,11 +331,17 @@ function BandSection({
   recommendations,
   selectedRoutes,
   onToggleSelect,
+  savedIds,
+  savingIds,
+  onToggleSave,
 }: {
   band: ChanceBand;
   recommendations: Recommendation[];
   selectedRoutes: Recommendation[];
   onToggleSelect: (rec: Recommendation) => void;
+  savedIds: string[];
+  savingIds: string[];
+  onToggleSave: (programId: string) => void;
 }) {
   if (recommendations.length === 0) return null;
   const cfg = BAND_CONFIG[band];
@@ -337,6 +367,9 @@ function BandSection({
             rec={rec}
             isSelected={selectedRoutes.some((r) => r.programmeId === rec.programmeId)}
             onToggle={() => onToggleSelect(rec)}
+            isSaved={savedIds.includes(rec.programmeId)}
+            isSaving={savingIds.includes(rec.programmeId)}
+            onToggleSave={() => onToggleSave(rec.programmeId)}
           />
         ))}
       </div>
@@ -371,6 +404,11 @@ export default function PredictorClient({
   const [maxFee, setMaxFee] = useState("");
   const [priority, setPriority] = useState<Priority>("BALANCED");
 
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [savingIds, setSavingIds] = useState<string[]>([]);
+
   // Request state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -379,6 +417,74 @@ export default function PredictorClient({
   // Compare state
   const [selectedRoutes, setSelectedRoutes] = useState<Recommendation[]>([]);
   const [selectionWarning, setSelectionWarning] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (status === "loading") {
+      return;
+    }
+
+    if (session?.user) {
+      fetch("/api/saved-routes")
+        .then((res) => {
+          if (!res.ok) throw new Error("Unable to fetch saved routes.");
+          return res.json();
+        })
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setSavedIds(data.map((item: { programId: string }) => item.programId));
+          }
+        })
+        .catch((err) => console.error("Error fetching saved routes:", err));
+    }
+  }, [session, status]);
+
+  const handleToggleSave = async (programId: string) => {
+    if (!session?.user) {
+      router.push("/login");
+      return;
+    }
+
+    const isSaved = savedIds.includes(programId);
+    setSavingIds((prev) =>
+      prev.includes(programId) ? prev : [...prev, programId]
+    );
+
+    if (isSaved) {
+      setSavedIds((prev) => prev.filter((id) => id !== programId));
+      try {
+        const res = await fetch("/api/saved-routes", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ programId }),
+        });
+        if (!res.ok) throw new Error("Unable to remove saved route.");
+      } catch (err) {
+        console.error(err);
+        setSavedIds((prev) =>
+          prev.includes(programId) ? prev : [...prev, programId]
+        );
+      } finally {
+        setSavingIds((prev) => prev.filter((id) => id !== programId));
+      }
+    } else {
+      setSavedIds((prev) =>
+        prev.includes(programId) ? prev : [...prev, programId]
+      );
+      try {
+        const res = await fetch("/api/saved-routes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ programId }),
+        });
+        if (!res.ok) throw new Error("Unable to save route.");
+      } catch (err) {
+        console.error(err);
+        setSavedIds((prev) => prev.filter((id) => id !== programId));
+      } finally {
+        setSavingIds((prev) => prev.filter((id) => id !== programId));
+      }
+    }
+  };
 
   const toggleSelect = (rec: Recommendation) => {
     setSelectedRoutes((prev) => {
@@ -718,18 +824,27 @@ export default function PredictorClient({
                 recommendations={result.recommendations.safe}
                 selectedRoutes={selectedRoutes}
                 onToggleSelect={toggleSelect}
+                savedIds={session?.user ? savedIds : []}
+                savingIds={savingIds}
+                onToggleSave={handleToggleSave}
               />
               <BandSection
                 band="TARGET"
                 recommendations={result.recommendations.target}
                 selectedRoutes={selectedRoutes}
                 onToggleSelect={toggleSelect}
+                savedIds={session?.user ? savedIds : []}
+                savingIds={savingIds}
+                onToggleSave={handleToggleSave}
               />
               <BandSection
                 band="DREAM"
                 recommendations={result.recommendations.dream}
                 selectedRoutes={selectedRoutes}
                 onToggleSelect={toggleSelect}
+                savedIds={session?.user ? savedIds : []}
+                savingIds={savingIds}
+                onToggleSave={handleToggleSave}
               />
             </>
           )}

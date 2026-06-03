@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import SaveRouteButton from "@/components/SaveRouteButton";
 
 const DATA_NOTICE =
   "Development demo data — verify official sources before counselling.";
@@ -309,13 +310,14 @@ function ProgramCard({
       </div>
 
       {/* Check My Fit — links to predictor pre-filled with branch + city */}
-      <div className="mt-5 pt-4 border-t border-border/40">
+      <div className="mt-5 pt-4 border-t border-border/40 flex flex-wrap items-center gap-3">
         <Link
           href={`/predictor?branch=${program.branchCode}&city=${encodeURIComponent(collegeCity)}`}
           className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full border border-primary/30 text-primary hover:bg-primary/5 transition-colors"
         >
           Check My Fit →
         </Link>
+        <SaveRouteButton programId={program.id} />
       </div>
     </div>
   );
@@ -350,9 +352,17 @@ export default async function CollegeDetailPage({
           >
             ← Back to Explorer
           </Link>
-          <span className="data-label text-[10px] font-mono font-semibold tracking-widest text-muted uppercase">
-            ChoicePilot
-          </span>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/dashboard"
+              className="data-label text-[10px] font-mono font-semibold tracking-widest text-muted hover:text-ink uppercase transition-colors"
+            >
+              Dashboard
+            </Link>
+            <span className="data-label text-[10px] font-mono font-semibold tracking-widest text-muted uppercase">
+              ChoicePilot
+            </span>
+          </div>
         </div>
       </div>
 

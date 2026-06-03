@@ -26,9 +26,17 @@ export default async function PredictorPage({
           >
             ← Back to Home
           </Link>
-          <span className="data-label text-[10px] font-mono font-semibold tracking-widest text-muted uppercase">
-            ChoicePilot
-          </span>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/dashboard"
+              className="data-label text-[10px] font-mono font-semibold tracking-widest text-muted hover:text-ink uppercase transition-colors"
+            >
+              Dashboard
+            </Link>
+            <span className="data-label text-[10px] font-mono font-semibold tracking-widest text-muted uppercase">
+              ChoicePilot
+            </span>
+          </div>
         </div>
       </div>
 
