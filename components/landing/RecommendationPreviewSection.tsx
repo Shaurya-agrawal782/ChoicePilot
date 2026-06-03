@@ -9,9 +9,9 @@ export default function RecommendationPreviewSection() {
   ];
 
   return (
-    <section className="relative w-full bg-paper text-ink pt-0 md:pt-2 lg:pt-4 pb-20 md:pb-28 lg:pb-36">
+    <section className="relative w-full bg-paper text-ink pt-0 pb-20 md:pb-28 lg:pb-36">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-24 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-24 items-start">
           
           {/* Left Column: Editorial Explanation Content */}
           <div className="lg:col-span-5 flex flex-col justify-center">
