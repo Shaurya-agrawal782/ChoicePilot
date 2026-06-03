@@ -74,3 +74,19 @@
 - Supported reduced-motion: disables path drawing, scale, and translations, revealing components with short simple opacity fades.
 - Verified build and lint checks pass successfully.
 
+## [2026-06-03] Landing Section 2 — Static Decision Story Composition
+
+- Checkpointed the approved Decision Atlas route-calculation animations locally.
+- Created and refined `components/landing/DecisionStorySection.tsx` directly below the hero:
+  - Replaced the linear gradient transition with a crisp, premium, curved paper-edge SVG path transitioning smoothly from `bg-midnight` to `bg-paper`.
+  - Structured desktop narrative flow to read cleanly top-to-bottom: Editorial Header → Horizontal Factor Card Sequence (Rank, Branch Priority, Annual Budget, Decision Priority) → Inputs Divider Connector → Centered Generated Route Outcome Card.
+  - Added a restrained static inputs-to-route connection divider (`INPUTS RESOLVED INTO ROUTE` flanked by thin horizontal lines) to suggest a decision-engine flow.
+  - Refined factor card density by reducing vertical heights/paddings and spacing to make them tighter and keep focus on the outcome card.
+  - Maintained mobile stacking order (Header → Cards 01-04 → Generated Route Card) without overflow.
+- Scroll/story animation for this new section remains intentionally deferred pending visual approval.
+- Refined hero-to-story vertical handoff to reduce excess dark dead space while preserving the approved dark-to-warm narrative transition.
+- Verified build and lint checks pass successfully.
+
+
+
+

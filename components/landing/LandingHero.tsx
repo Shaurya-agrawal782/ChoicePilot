@@ -38,7 +38,7 @@ export default function LandingHero() {
       };
 
   return (
-    <section className="relative w-full min-h-screen lg:h-screen lg:min-h-[600px] lg:max-h-[850px] flex flex-col bg-midnight text-warm-white overflow-hidden bg-[radial-gradient(ellipse_at_top_left,_var(--color-midnight-surface)_0%,_var(--color-midnight)_60%)]">
+    <section className="relative w-full min-h-screen lg:h-[90vh] lg:min-h-[600px] lg:max-h-[800px] flex flex-col bg-midnight text-warm-white overflow-hidden bg-[radial-gradient(ellipse_at_top_left,_var(--color-midnight-surface)_0%,_var(--color-midnight)_60%)]">
       {/* Navbar Entrance */}
       <motion.div
         initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
@@ -50,7 +50,7 @@ export default function LandingHero() {
       </motion.div>
 
       {/* Hero Body Content */}
-      <div className="flex-1 w-full max-w-7xl mx-auto px-6 md:px-12 py-6 md:py-8 lg:py-10 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-10 lg:gap-12 xl:gap-16 z-10 overflow-y-auto lg:overflow-visible">
+      <div className="flex-1 w-full max-w-7xl mx-auto px-6 md:px-12 py-6 md:py-8 lg:pt-10 lg:pb-6 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-10 lg:gap-12 xl:gap-16 z-10 overflow-y-auto lg:overflow-visible">
 
         {/* Left Column: Staggered Entrance */}
         <motion.div
