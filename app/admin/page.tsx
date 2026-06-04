@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import AdminConsoleClient from "@/components/admin/AdminConsoleClient";
 
 export const dynamic = "force-dynamic";
 
@@ -35,10 +35,6 @@ export default async function AdminPage() {
       </main>
     );
   }
-
-  const collegeCount = await prisma.college.count();
-  const programCount = await prisma.program.count();
-  const cutoffCount = await prisma.cutoff.count();
 
   return (
     <main className="min-h-screen bg-paper text-ink pb-24">
@@ -75,52 +71,16 @@ export default async function AdminPage() {
         </p>
       </div>
 
-      {/* Grid of summaries */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 mt-4">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-          <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
-            <div className="data-label text-[10px] font-mono text-muted uppercase tracking-wider mb-2">
-              Colleges
-            </div>
-            <div className="text-2xl font-mono font-semibold text-ink">
-              {collegeCount}
-            </div>
-          </div>
+      {/* Admin Management console client area */}
+      <AdminConsoleClient />
 
-          <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
-            <div className="data-label text-[10px] font-mono text-muted uppercase tracking-wider mb-2">
-              Programmes
-            </div>
-            <div className="text-2xl font-mono font-semibold text-ink">
-              {programCount}
-            </div>
-          </div>
-
-          <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
-            <div className="data-label text-[10px] font-mono text-muted uppercase tracking-wider mb-2">
-              Cutoff Records
-            </div>
-            <div className="text-2xl font-mono font-semibold text-ink">
-              {cutoffCount}
-            </div>
-          </div>
-        </div>
-
-        {/* Note info block */}
-        <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm mb-8">
-          <p className="text-sm text-muted leading-relaxed">
-            <span className="font-semibold text-ink">Note:</span> Management controls will be added in the next step.
-          </p>
-        </div>
-
-        <div>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-full border border-border hover:bg-border/10 text-ink transition-colors"
-          >
-            ← Back to Dashboard
-          </Link>
-        </div>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 mt-8">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-full border border-border hover:bg-border/10 text-ink transition-colors"
+        >
+          ← Back to Dashboard
+        </Link>
       </div>
     </main>
   );
