@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import SaveRouteButton from "@/components/SaveRouteButton";
+import { prisma } from "@/lib/prisma";
 
 const DATA_NOTICE =
   "Development demo data — verify official sources before counselling.";
@@ -96,27 +98,30 @@ function formatPackage(pkg: number): string {
 
 // ── Data fetching ─────────────────────────────────────────────────────────────
 
-async function getCollege(slug: string): Promise<College | null> {
+const getCollege = cache(async (slug: string): Promise<College | null> => {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ??
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000");
-
-    const res = await fetch(`${baseUrl}/api/colleges/${slug}`, {
-      cache: "no-store",
+    const college = await prisma.college.findUnique({
+      where: { slug },
+      include: {
+        programs: {
+          orderBy: { branchCode: "asc" },
+          include: {
+            cutoffs: {
+              orderBy: [{ year: "desc" }, { round: "asc" }, { category: "asc" }],
+              include: {
+                source: true,
+              },
+            },
+          },
+        },
+      },
     });
 
-    if (res.status === 404) return null;
-    if (!res.ok) throw new Error("Failed to fetch college");
-
-    const json = await res.json();
-    return json.college as College;
+    return college as College | null;
   } catch {
     return null;
   }
-}
+});
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
 
