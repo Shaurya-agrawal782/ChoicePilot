@@ -34,7 +34,7 @@ export default function DecisionStorySection() {
       };
 
   return (
-    <section className="relative w-full bg-paper text-ink overflow-hidden -mt-6 lg:-mt-12">
+    <section id="how-it-works" className="relative w-full bg-paper text-ink overflow-hidden -mt-6 lg:-mt-12">
       {/* Subtle curved paper-edge transition from dark hero to warm paper */}
       <div className="relative w-full h-16 bg-midnight pointer-events-none">
         <svg 

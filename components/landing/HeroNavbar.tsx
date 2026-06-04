@@ -22,7 +22,7 @@ export default function HeroNavbar() {
         <Link href="#how-it-works" className="text-xs sm:text-sm font-medium text-warm-white/60 hover:text-warm-white transition-colors">
           How It Works
         </Link>
-        <Link href="#methodology" className="text-xs sm:text-sm font-medium text-warm-white/60 hover:text-warm-white transition-colors">
+        <Link href="/about-data" className="text-xs sm:text-sm font-medium text-warm-white/60 hover:text-warm-white transition-colors">
           Data Methodology
         </Link>
       </div>
