@@ -3,11 +3,13 @@ import type { DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import type { UserRole } from "@prisma/client";
 
 declare module "next-auth" {
   interface Session {
     user: DefaultSession["user"] & {
       id: string;
+      role: UserRole;
     };
   }
 }
@@ -47,6 +49,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user.id,
           name: user.name,
           email: user.email,
+          role: user.role,
         };
       },
     }),
@@ -59,6 +62,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.role = (user as { role?: UserRole }).role;
       }
       return token;
     },
@@ -67,6 +71,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = String(token.id);
         session.user.name = token.name ? String(token.name) : "";
         session.user.email = token.email ? String(token.email) : "";
+        session.user.role = token.role as UserRole;
       }
       return session;
     },

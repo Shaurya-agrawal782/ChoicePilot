@@ -48,6 +48,14 @@ export default async function DashboardPage() {
             ChoicePilot
           </span>
           <div className="flex items-center gap-6">
+            {session.user.role === "ADMIN" && (
+              <Link
+                href="/admin"
+                className="data-label text-xs font-mono font-semibold text-primary hover:text-primary/80 transition-colors uppercase tracking-wider"
+              >
+                Admin Console
+              </Link>
+            )}
             <span className="data-label text-xs font-mono text-muted">
               {session.user.name ?? session.user.email}
             </span>
